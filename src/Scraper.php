@@ -1,19 +1,16 @@
 #!/usr/bin/env php
 <?php
-
+namespace Tools;
 require "vendor/autoload.php";
-
-use Goutte\Client;
-$client = new Client();
-$crawler = $client->request('GET','https://videx.comesconnected.com');
 
 class Scraper
 {
-    public function getPrices($data, &$prices)
+    public function getPrices($data)
     {
         # TODO: Using the columns variable to tell when annual prices begin to be read. Ideally this would be dynamically calculated.
         $columns = 3;
         $tracker = 0;
+        $prices = [];
         $data->filter('.price-big')->each(function ($val) use(&$tracker, &$columns, &$prices)
         {
             # Converting string to int to allow for price sorting operation
@@ -30,13 +27,7 @@ class Scraper
                 $prices[] = $intVal;
             }
         });
+        return $prices;
     }
 }
-
-$scrape = new Scraper();
-$prices = [];
-$scrape->getPrices($crawler, $prices);
-
-echo print_r($prices);
-
 ?>
