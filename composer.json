@@ -1,0 +1,22 @@
+{
+    "name": "adidu/videx-scraper",
+    "description": "Scrapes the Videx website for it's packages and returns them as a JSON",
+    "type": "project",
+    "require": {
+        "fabpot/goutte": "^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Adidu\\VidexScraper\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Aditya K Menon",
+            "email": "menon.or.adithya@gmail.com"
+        }
+    ]
+}
