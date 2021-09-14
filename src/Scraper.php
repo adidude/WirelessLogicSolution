@@ -4,6 +4,7 @@ namespace Tools;
 require "vendor/autoload.php";
 
 use Goutte\Client;
+use \stdClass;
 
 class Scraper
 {
@@ -57,6 +58,38 @@ class Scraper
             
         });
         return $arrayToFill;
+    }
+
+    function createJSON($package, $option, $description, $price, $discount)
+    {
+        # Fills a stdObj and turns it into a json for output.
+        $package->optionTitle = $option;
+        $package->description = $description;
+        $package->price = $price;
+        $package->discount = $discount;
+        return json_encode($package, JSON_UNESCAPED_UNICODE);
+    }
+
+    function stitchPackages($options, $descriptions, $annualPrices, $discounts)
+    {
+        # TODO: Columns need to determined programatically
+        $columns = 3;
+        $noOfPackages = count($options);
+        $jsonPacker = [];
+        for ($i=0; $i < $noOfPackages; $i++)
+        {
+            $pack = new stdClass();
+            if($i < $columns)
+            {
+                # Monthly plans have no discount and are initialised empty
+                $jsonPacker[] = createJSON($pack, $options[$i], $descriptions[$i], $annualPrices[$i], '');
+            }
+            else
+            {
+                $jsonPacker[] = createJSON($pack, $options[$i], $descriptions[$i], $annualPrices[$i], $discounts[$i - $columns]);
+            }
+        }
+        return $jsonPacker;
     }
 }
 ?>
