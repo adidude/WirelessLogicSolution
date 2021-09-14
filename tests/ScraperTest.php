@@ -9,13 +9,21 @@ class ScraperTest extends TestCase
 {   
     public function setUp() : void
     {
-        
         $this->scraper = new Scraper();
+        $this->opts = ["Option 0", "Option 1", "Option 2"];
+        $this->desc = ["big", "bigger", "biggest"];
+        $this->costs = [5,10,15];
+        $this->discounts = ["None", "Some", "50%"];
+        $this->jsonData = json_encode(array("optionTitle"=>array("Option 0", "Option 1", "Option 2"),"description"=>array("big", "bigger", "biggest"),"price"=>array(5,10,15),"discount"=>array("None", "Some", "50%")));
     }
 
     public function tearDown() : void
     {
         unset($this->scraper);
+        unset($this->opts);
+        unset($this->desc);
+        unset($this->costs);
+        unset($this->discounts);
     }
 
     public function testPriceFetch()
@@ -55,13 +63,20 @@ class ScraperTest extends TestCase
     public function testCreateJson()
     {
         $obj = new stdClass();
-        $opts = ["Option 0", "Option 1", "Option 2"];
-        $desc = ["big", "bigger", "biggest"];
-        $costs = [5,10,15];
-        $discounts = ["None", "Some", "50%"];
-        $answer = json_encode(array("optionTitle"=>array("Option 0", "Option 1", "Option 2"),"description"=>array("big", "bigger", "biggest"),"price"=>array(5,10,15),"discount"=>array("None", "Some", "50%")));
-        $output = $this->scraper->createJSON($obj, $opts, $desc, $costs, $discounts);
+        
+        $answer = $this->jsonData;
+        $output = $this->scraper->createJSON($obj, $this->opts, $this->desc, $this->costs, $this->discounts);
         $this->assertEquals($answer,$output,"The json files are not the same");
     }
+
+    /*public function testStitching()
+    {
+        $output = $this->scraper->stitchPackages($this->opts, $this->desc, $this->costs, $this->discounts);
+        $answer = $this->jsonData;
+        $this->assertEquals($answer,$output,"Stitching unsucessful");
+    }*/
+
+    
+    
 }
 ?>
