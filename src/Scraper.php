@@ -3,15 +3,23 @@
 namespace Tools;
 require "vendor/autoload.php";
 
+use Goutte\Client;
+
 class Scraper
 {
-    public function getPrices($data)
+    public function __construct()
+    {
+        $client = new Client();
+        $this->data = $client->request("GET","https://videx.comesconnected.com");
+    }
+
+    public function getPrices()
     {
         # TODO: Using the columns variable to tell when annual prices begin to be read. Ideally this would be dynamically calculated.
         $columns = 3;
         $tracker = 0;
         $prices = [];
-        $data->filter('.price-big')->each(function ($val) use(&$tracker, &$columns, &$prices)
+        $this->data->filter('.price-big')->each(function ($val) use(&$tracker, &$columns, &$prices)
         {
             # Converting string to int to allow for price sorting operation
             $valStr = $val->text();
@@ -28,6 +36,27 @@ class Scraper
             }
         });
         return $prices;
+    }
+
+    public function getData($query)
+    {
+        $arrayToFill = [];
+        $this->data->filter($query)->each(function ($val) use(&$arrayToFill)
+        {
+            # Getting the html response to add space between line breaks
+            $hyperText = $val->html();
+            if(str_contains($hyperText, "<br>"))
+            {
+                $hyperText = str_replace("<br>", " ", $hyperText);
+                $arrayToFill[] = strip_tags($hyperText);
+            }
+            else
+            {
+                $arrayToFill[] = $val->text();
+            }
+            
+        });
+        return $arrayToFill;
     }
 }
 ?>
