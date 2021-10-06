@@ -1,3 +1,4 @@
+
 ~~~Required installs~~~
 -Composer 2.1.x (package manager)
 -PHP 8.x
